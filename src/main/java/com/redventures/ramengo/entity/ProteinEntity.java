@@ -1,16 +1,17 @@
 package com.redventures.ramengo.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
 @Table(name = "TBL_PROTEIN")
-public class ProteinEntity {
+@EqualsAndHashCode(callSuper = true)
+public class ProteinEntity extends ProductEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-
+    @Column(name = "image_ramen")
+    private String imageRamen;
 }

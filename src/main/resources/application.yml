@@ -13,3 +13,8 @@ spring:
       properties:
         hibernate:
           dialect: org.hibernate.dialect.PostgreSQLDialect
+
+api:
+  key:
+    header: x-api-key
+    value: ZtVdh8XQ2U8pWI2gmZ7f796Vh8GllXoN7mr0djNf
