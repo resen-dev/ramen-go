@@ -14,8 +14,8 @@ import java.util.Enumeration;
 
 public class ApiKeyFilter extends OncePerRequestFilter {
 
-    private static String API_KEY_HEADER;
-    private static String API_KEY_VALUE;
+    private final String API_KEY_HEADER;
+    private final String API_KEY_VALUE;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -26,8 +26,9 @@ public class ApiKeyFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
         String apiKey = request.getHeader(API_KEY_HEADER);
-        printAllHeaders(request);
+
         if (apiKey == null || apiKey.isEmpty()) {
             ApiError error = new ApiError("x-api-key header missing");
             writeJsonResponse(response, error, HttpStatus.FORBIDDEN);
@@ -47,22 +48,5 @@ public class ApiKeyFilter extends OncePerRequestFilter {
         response.setStatus(status.value());
         response.setContentType("application/json");
         response.getWriter().write(objectMapper.writeValueAsString(error));
-    }
-
-    private void printAllHeaders(HttpServletRequest request) {
-        Enumeration<String> headerNames = request.getHeaderNames();
-        if (headerNames != null) {
-            System.out.println("Headers:");
-            while (headerNames.hasMoreElements()) {
-                String headerName = headerNames.nextElement();
-                Enumeration<String> headers = request.getHeaders(headerName);
-                if (headers != null) {
-                    while (headers.hasMoreElements()) {
-                        String headerValue = headers.nextElement();
-                        System.out.println(headerName + ": " + headerValue);
-                    }
-                }
-            }
-        }
     }
 }

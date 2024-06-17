@@ -20,7 +20,6 @@ public class BrothController {
     BrothService brothService;
 
     @GetMapping
-    @CrossOrigin("https://tech.redventures.com.br/")
     public ResponseEntity<List<BrothEntity>> getAllBroths() {
         return ResponseEntity.ok(brothService.getAllBroths());
     }
