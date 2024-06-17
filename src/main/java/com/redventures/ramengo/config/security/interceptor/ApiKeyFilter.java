@@ -2,6 +2,7 @@ package com.redventures.ramengo.config.security.interceptor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.redventures.ramengo.config.errorhandler.ApiError;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -10,8 +11,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Enumeration;
 
+@Slf4j
 public class ApiKeyFilter extends OncePerRequestFilter {
 
     private final String API_KEY_HEADER;
@@ -26,22 +27,28 @@ public class ApiKeyFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        synchronized (this) {
 
-        String apiKey = request.getHeader(API_KEY_HEADER);
+            String apiKey = request.getHeader(API_KEY_HEADER);
 
-        if (apiKey == null || apiKey.isEmpty()) {
-            ApiError error = new ApiError("x-api-key header missing");
-            writeJsonResponse(response, error, HttpStatus.FORBIDDEN);
-            return;
+            log.info("request: {} headers:", request.getRequestURL());
+            request.getHeaderNames()
+                    .asIterator().forEachRemaining(log::info);
+
+            if (apiKey == null || apiKey.isBlank()) {
+                log.error("x-api-key header missing");
+                writeJsonResponse(response, new ApiError("x-api-key header missing"), HttpStatus.FORBIDDEN);
+                return;
+            }
+
+            if (!apiKey.equalsIgnoreCase(API_KEY_VALUE)) {
+                log.error("Invalid API key");
+                writeJsonResponse(response, new ApiError("Invalid API key"), HttpStatus.UNAUTHORIZED);
+                return;
+            }
+
+            filterChain.doFilter(request, response);
         }
-
-        if (!apiKey.equalsIgnoreCase(API_KEY_VALUE)) {
-            ApiError error = new ApiError("Invalid API key");
-            writeJsonResponse(response, error, HttpStatus.UNAUTHORIZED);
-            return;
-        }
-
-        filterChain.doFilter(request, response);
     }
 
     private void writeJsonResponse(HttpServletResponse response, ApiError error, HttpStatus status) throws IOException {

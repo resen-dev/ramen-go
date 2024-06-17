@@ -5,9 +5,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class WebConfig {
+public class WebConfig implements WebMvcConfigurer {
 
     @Value("${api.key.value}")
     private String API_KEY_VALUE;
@@ -20,5 +22,10 @@ public class WebConfig {
         registrationBean.setFilter(new ApiKeyFilter(API_KEY_VALUE, API_KEY_HEADER));
         registrationBean.addUrlPatterns("/*");
         return registrationBean;
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+
     }
 }

@@ -13,7 +13,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1/proteins")
-@CrossOrigin(origins = "https://tech.redventures.com.br", allowedHeaders = "x-api-key")
 public class ProteinController {
 
     @Autowired

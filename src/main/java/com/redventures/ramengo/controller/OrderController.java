@@ -14,7 +14,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1/orders")
-@CrossOrigin(origins = "https://tech.redventures.com.br", allowedHeaders = "x-api-key")
 public class OrderController {
 
     @Autowired
