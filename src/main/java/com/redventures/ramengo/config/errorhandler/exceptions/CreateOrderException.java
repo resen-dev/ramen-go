@@ -8,4 +8,8 @@ public class CreateOrderException extends CustomRuntimeException {
     public CreateOrderException() {
         super(ErrorType.CREATE_ORDER_ERROR);
     }
+
+    public CreateOrderException(String customMessage) {
+        super(ErrorType.CREATE_ORDER_ERROR, customMessage);
+    }
 }
